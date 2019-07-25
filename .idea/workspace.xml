@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="784e87bc-03a1-4e8e-a4b2-3256dec43ace" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/query/DateQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/LogParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/LogParser.java" afterDir="false" />
-    </list>
+    <list default="true" id="784e87bc-03a1-4e8e-a4b2-3256dec43ace" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,10 +55,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/LogParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-741">
+            <state relative-caret-position="-696">
               <caret line="247" column="75" lean-forward="true" selection-start-line="247" selection-start-column="75" selection-end-line="247" selection-end-column="75" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -97,10 +94,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/Solution.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
+            <state relative-caret-position="-150">
               <caret line="11" column="102" selection-start-line="11" selection-start-column="102" selection-end-line="11" selection-end-column="102" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -187,7 +184,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1564030477433" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1564037231573" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -250,12 +247,12 @@
       <option name="presentableId" value="Default" />
       <updated>1563459513215</updated>
       <workItem from="1563459517417" duration="2833000" />
-      <workItem from="1563996945282" duration="4244000" />
+      <workItem from="1563996945282" duration="5432000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7077000" />
+    <option name="totallyTimeSpent" value="8265000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="2" width="1356" height="726" extended-state="0" />
@@ -346,9 +343,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/Solution.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-150">
+          <caret line="11" column="102" selection-start-line="11" selection-start-column="102" selection-end-line="11" selection-end-column="102" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/LogParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-741">
+        <state relative-caret-position="-696">
           <caret line="247" column="75" lean-forward="true" selection-start-line="247" selection-start-column="75" selection-end-line="247" selection-end-column="75" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -356,16 +363,6 @@
             <element signature="e#1698#1699#0" expanded="true" />
             <element signature="e#3445#3446#0" expanded="true" />
             <element signature="e#3502#3503#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/Solution.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="102" selection-start-line="11" selection-start-column="102" selection-end-line="11" selection-end-column="102" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

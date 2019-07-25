@@ -1,6 +1,7 @@
 package com;
 
 import com.query.DateQuery;
+import com.query.EventQuery;
 import com.query.IPQuery;
 import com.query.UserQuery;
 
@@ -10,14 +11,12 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LogParser implements IPQuery, UserQuery, DateQuery {
+public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
     public List<Path> filePathsCollector;
     public List<String> infoCollector;
     Path logDir;
@@ -78,6 +77,15 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
             return 0;
         }
 
+    }
+
+    private Event toEvent(String str) {
+        if (str.equals(Event.LOGIN.toString())) return Event.LOGIN;
+        else if (str.equals(Event.DOWNLOAD_PLUGIN.toString())) return Event.DOWNLOAD_PLUGIN;
+        else if (str.equals(Event.WRITE_MESSAGE.toString())) return Event.WRITE_MESSAGE;
+        else if (str.equals(Event.SOLVE_TASK.toString())) return Event.SOLVE_TASK;
+        else if (str.equals(Event.DONE_TASK.toString())) return Event.DONE_TASK;
+        return null;
     }
 
     private Date getDate(String logString){
@@ -311,5 +319,93 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
                 .filter(x -> getEvent(x).equals(Event.DOWNLOAD_PLUGIN.toString()))
                 .map(this::getDate)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public int getNumberOfAllEvents(Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .map(this::getEvent)
+                .collect(Collectors.toSet()).size();
+
+    }
+
+
+    @Override
+    public Set<Event> getAllEvents(Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .map(this::getEvent)
+                .map(this::toEvent)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getEventsForIP(String ip, Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getIP(x).equals(ip))
+                .map(x -> toEvent(getEvent(x)))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getEventsForUser(String user, Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getUser(x).equals(user))
+                .map(x -> toEvent(getEvent(x)))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getFailedEvents(Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getStatus(x).equals(Status.FAILED.toString()))
+                .map(x -> toEvent(getEvent(x)))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getErrorEvents(Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getStatus(x).equals(Status.ERROR.toString()))
+                .map(x -> toEvent(getEvent(x)))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public int getNumberOfAttemptToSolveTask(int task, Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getEvent(x).equals(Event.SOLVE_TASK.toString()))
+                .filter(x -> getEventNumber(x) == task)
+                .map(e -> 1)
+                .reduce(0, Integer::sum);
+
+    }
+
+    @Override
+    public int getNumberOfSuccessfulAttemptToSolveTask(int task, Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getEvent(x).equals(Event.DONE_TASK.toString()))
+                .filter(x -> getEventNumber(x) == task)
+                .map(e -> 1)
+                .reduce(0, Integer::sum);
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllSolvedTasksAndTheirNumber(Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getEvent(x).equals(Event.SOLVE_TASK.toString()))
+                .map(this::getEventNumber)
+                .collect(Collectors.groupingBy(
+                        Function.identity(), Collectors.reducing(0, e -> 1, Integer::sum))
+                );
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllDoneTasksAndTheirNumber(Date after, Date before) {
+        return getListDate(infoCollector, after, before).stream()
+                .filter(x -> getEvent(x).equals(Event.DONE_TASK.toString()))
+                .map(this::getEventNumber)
+                .collect(Collectors.groupingBy(
+                        Function.identity(), Collectors.reducing(0, e -> 1, Integer::sum))
+                );
     }
 }
