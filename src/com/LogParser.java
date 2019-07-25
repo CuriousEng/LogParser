@@ -1,9 +1,6 @@
 package com;
 
-import com.query.DateQuery;
-import com.query.EventQuery;
-import com.query.IPQuery;
-import com.query.UserQuery;
+import com.query.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
+public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQuery {
     public List<Path> filePathsCollector;
     public List<String> infoCollector;
     Path logDir;
@@ -70,15 +67,6 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
         return s.split("\\t")[3].split(" ")[0];
     }
 
-    private int getEventNumber(String s){
-        if (s.split("\\t")[3].split(" ").length == 2) {
-            return Integer.parseInt(s.split("\\t")[3].split(" ")[1]);
-        } else {
-            return 0;
-        }
-
-    }
-
     private Event toEvent(String str) {
         if (str.equals(Event.LOGIN.toString())) return Event.LOGIN;
         else if (str.equals(Event.DOWNLOAD_PLUGIN.toString())) return Event.DOWNLOAD_PLUGIN;
@@ -86,6 +74,21 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
         else if (str.equals(Event.SOLVE_TASK.toString())) return Event.SOLVE_TASK;
         else if (str.equals(Event.DONE_TASK.toString())) return Event.DONE_TASK;
         return null;
+    }
+    private Status toStatus(String str) {
+        if (str.equals(Status.OK.toString())) return Status.OK;
+        else if (str.equals(Status.FAILED.toString())) return Status.FAILED;
+        else if (str.equals(Status.ERROR.toString())) return Status.ERROR;
+        return null;
+    }
+
+    private int getEventNumber(String s){
+        if (s.split("\\t")[3].split(" ").length == 2) {
+            return Integer.parseInt(s.split("\\t")[3].split(" ")[1]);
+        } else {
+            return 0;
+        }
+
     }
 
     private Date getDate(String logString){
@@ -164,7 +167,7 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
     @Override
     public int getNumberOfUsers(Date after, Date before) {
         return getListDate(infoCollector, after, before).stream()
-                .map(x -> getUser(x))
+                .map(this::getUser)
                 .collect(Collectors.toSet()).size();
     }
 
@@ -407,5 +410,28 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
                 .collect(Collectors.groupingBy(
                         Function.identity(), Collectors.reducing(0, e -> 1, Integer::sum))
                 );
+    }
+
+    @Override
+    public Set<Object> execute(String query) {
+        switch (query) {
+            case "get ip":
+                return new HashSet<>(getUniqueIPs(null, null));
+            case "get user":
+                return new HashSet<>(getAllUsers());
+            case "get date":
+                return infoCollector.stream()
+                        .map(this::getDate)
+                        .collect(Collectors.toSet());
+            case "get event":
+                return infoCollector.stream()
+                        .map(x -> toEvent(getEvent(x)))
+                        .collect(Collectors.toSet());
+            case "get status":
+                return infoCollector.stream()
+                        .map(x -> toStatus(getStatus(x)))
+                        .collect(Collectors.toSet());
+        }
+        return null;
     }
 }
