@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -412,8 +414,57 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
                 );
     }
 
+    private String getQLMatch(String query, String groupName) {
+        String match = null;
+        Matcher m = Pattern.compile(
+                "get (?<field1>\\w+) for (?<field2>\\w+) = \"(?<value1>.*?)\"")
+                .matcher(query);
+        if (m.find()) {
+            match = m.group(groupName);
+        }
+        return match;
+    }
+
+    private String getMatch(String logLine, String groupName) {
+        String match = null;
+        Matcher m = Pattern.compile(
+                "(?<ip>[\\d]+.[\\d]+.[\\d]+.[\\d]+)\\s" +
+                        "(?<user>[a-zA-Z ]+)\\s" +
+                        "(?<date>[\\d]+.[\\d]+.[\\d]+ [\\d]+:[\\d]+:[\\d]+)\\s" +
+                        "(?<event>[\\w]+)\\s?(" +
+                        "(?<taskNumber>[\\d]+)|)\\s" +
+                        "(?<status>[\\w]+)")
+                .matcher(logLine);
+        if (m.find()) {
+            match = m.group(groupName);
+        }
+        return match;
+    }
+
     @Override
     public Set<Object> execute(String query) {
+
+        Set<Object> returnData = new HashSet<>();
+
+        String field1 = getQLMatch(query, "field1");
+        String field2 = getQLMatch(query, "field2");
+        String value1 = getQLMatch(query, "value1");
+
+        if (field1 != null && field2 != null && value1 != null) {
+            for (String logLine : infoCollector) {
+                if (getMatch(logLine, field2).equals(value1)) {
+                    if (field1.equalsIgnoreCase("date")) {
+                        returnData.add(getDate(logLine));
+                    } else if (field1.equalsIgnoreCase("event")) {
+                        returnData.add(toEvent(getEvent(logLine)));
+                    } else if (field1.equalsIgnoreCase("status")) {
+                        returnData.add(toStatus(getStatus(logLine)));
+                    } else
+                        returnData.add(getMatch(logLine, field1));
+                }
+            }
+        }
+
         switch (query) {
             case "get ip":
                 return new HashSet<>(getUniqueIPs(null, null));
@@ -432,6 +483,6 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
                         .map(x -> toStatus(getStatus(x)))
                         .collect(Collectors.toSet());
         }
-        return null;
+        return returnData;
     }
 }
