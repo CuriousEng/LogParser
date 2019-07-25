@@ -123,6 +123,24 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
         }
     }
 
+    private List<String> getBetweenListDate(List<String> logInfo, Date after, Date before){
+        if (after == null && before == null){
+            return logInfo;
+        } else if (after == null) {
+            return logInfo.stream()
+                    .filter(s -> getDate(s).getTime() < before.getTime())
+                    .collect(Collectors.toList());
+        } else if (before == null) {
+            return logInfo.stream()
+                    .filter(s -> getDate(s).getTime() > after.getTime())
+                    .collect(Collectors.toList());
+        } else {
+            return logInfo.stream()
+                    .filter(s -> getDate(s).getTime() > after.getTime() && getDate(s).getTime() < before.getTime())
+                    .collect(Collectors.toList());
+        }
+    }
+
     @Override
     public int getNumberOfUniqueIPs(Date after, Date before) {
         return getUniqueIPs(after, before).size();
@@ -414,11 +432,19 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
                 );
     }
 
+
     private String getQLMatch(String query, String groupName) {
         String match = null;
-        Matcher m = Pattern.compile(
-                "get (?<field1>\\w+) for (?<field2>\\w+) = \"(?<value1>.*?)\"")
-                .matcher(query);
+        Matcher m;
+        if (query.contains("between")) {
+            m = Pattern.compile(
+                    "get (?<field1>\\w+) for (?<field2>\\w+) = \"(?<value1>.*?)\" and date between \"(?<after>.*?)\" and \"(?<before>.*?)\"")
+                    .matcher(query);
+        } else {
+            m = Pattern.compile(
+                    "get (?<field1>\\w+) for (?<field2>\\w+) = \"(?<value1>.*?)\"")
+                    .matcher(query);
+        }
         if (m.find()) {
             match = m.group(groupName);
         }
@@ -445,13 +471,33 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery, QLQ
     public Set<Object> execute(String query) {
 
         Set<Object> returnData = new HashSet<>();
+        List<String> info;
+        SimpleDateFormat format;
 
         String field1 = getQLMatch(query, "field1");
         String field2 = getQLMatch(query, "field2");
         String value1 = getQLMatch(query, "value1");
+        String after = null, before = null;
+        if (query.contains("between")) {
+            after = getQLMatch(query, "after");
+            before = getQLMatch(query, "before");
+        }
+
 
         if (field1 != null && field2 != null && value1 != null) {
-            for (String logLine : infoCollector) {
+            if (query.contains("between")) {
+                format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                Date afterDate = null, beforeDate = null;
+                try {
+                    afterDate = format.parse(after);
+                    beforeDate = format.parse(before);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                info = getBetweenListDate(infoCollector, afterDate, beforeDate);
+            } else info = infoCollector;
+
+            for (String logLine : info) {
                 if (getMatch(logLine, field2).equals(value1)) {
                     if (field1.equalsIgnoreCase("date")) {
                         returnData.add(getDate(logLine));

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="784e87bc-03a1-4e8e-a4b2-3256dec43ace" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/com/LogParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/LogParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/Solution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/Solution.java" afterDir="false" />
-    </list>
+    <list default="true" id="784e87bc-03a1-4e8e-a4b2-3256dec43ace" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -188,7 +185,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1564051247135" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1564055030513" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -251,16 +248,15 @@
       <option name="presentableId" value="Default" />
       <updated>1563459513215</updated>
       <workItem from="1563459517417" duration="2833000" />
-      <workItem from="1563996945282" duration="9459000" />
+      <workItem from="1563996945282" duration="10164000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12292000" />
+    <option name="totallyTimeSpent" value="12997000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="2" width="1356" height="726" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2534351" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
